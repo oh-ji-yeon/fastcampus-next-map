@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { StoreType } from "@/interface";
 
+import axios from "axios";
+
 export default function StoreListPage({ stores }: { stores: StoreType[] }) {
   // console.log(stores);
   return (
@@ -45,11 +47,9 @@ export default function StoreListPage({ stores }: { stores: StoreType[] }) {
 }
 
 export async function getServerSideProps() {
-  const stores = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/stores`
-  ).then((res) => res.json());
+  const stores = await axios(`${process.env.NEXT_PUBLIC_API_URL}/api/stores`);
 
   return {
-    props: { stores },
+    props: { stores: stores.data },
   };
 }
