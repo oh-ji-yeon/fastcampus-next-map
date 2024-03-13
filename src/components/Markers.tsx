@@ -1,5 +1,5 @@
 import { StoreType } from "@/interface";
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
+import { useEffect, useCallback, Dispatch, SetStateAction } from "react";
 
 interface MarkerProps {
   map: any;
@@ -8,13 +8,13 @@ interface MarkerProps {
 }
 
 export default function Markers({ map, stores, setCurrentStore }: MarkerProps) {
-  const loadKakaoMarkers = useCallback(() => {
+  const loadKakoMarkers = useCallback(() => {
     if (map) {
       // 식당 데이터 마커 띄우기
       stores?.map((store) => {
         var imageSrc = store?.category
             ? `/images/markers/${store?.category}.png`
-            : "images/markers/default.png", // 마커이미지의 주소입니다
+            : "/images/markers/default.png", // 마커이미지의 주소입니다
           imageSize = new window.kakao.maps.Size(40, 40), // 마커이미지의 크기입니다
           imageOption = { offset: new window.kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
@@ -24,6 +24,7 @@ export default function Markers({ map, stores, setCurrentStore }: MarkerProps) {
           imageSize,
           imageOption
         );
+
         // 마커가 표시될 위치입니다
         var markerPosition = new window.kakao.maps.LatLng(
           store?.lat,
@@ -39,8 +40,8 @@ export default function Markers({ map, stores, setCurrentStore }: MarkerProps) {
         // 마커가 지도 위에 표시되도록 설정합니다
         marker.setMap(map);
 
-        // 마커 커서가 오버 되었을 때 마커 위에 표시할 인포 윈도우 생성
-        var content = `<div class="infowindow">${store?.name}</div>`; // 인포 윈도우에 표시될 내용
+        // 마커 커서가 오버되었을 때 마커 위에 표시할 인포윈도우 생성
+        var content = `<div class="infowindow">${store?.name}</div>`; // 인포윈도우에 표시될 내용
 
         // 커스텀 오버레이를 생성합니다
         var customOverlay = new window.kakao.maps.CustomOverlay({
@@ -71,8 +72,7 @@ export default function Markers({ map, stores, setCurrentStore }: MarkerProps) {
   }, [map, setCurrentStore, stores]);
 
   useEffect(() => {
-    loadKakaoMarkers();
-  }, [loadKakaoMarkers, map]);
-
+    loadKakoMarkers();
+  }, [loadKakoMarkers, map]);
   return <></>;
 }
