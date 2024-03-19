@@ -1,7 +1,7 @@
 /* global kakao */
-
 import Script from "next/script";
-import { Dispatch, SetStateAction } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { locationState, mapState } from "@/atom";
 
 declare global {
   interface Window {
@@ -9,29 +9,26 @@ declare global {
   }
 }
 
-const DEFAULT_LAT = 37.497625203;
-const DEFAULT_LNG = 127.03088379;
-
-const DEFAULT_ZOOM = 3;
-
 interface MapProps {
-  setMap: Dispatch<SetStateAction<any>>;
   lat?: string | null;
   lng?: string | null;
   zoom?: number;
 }
 
-export default function Map({ setMap, lat, lng, zoom }: MapProps) {
+export default function Map({ lat, lng, zoom }: MapProps) {
+  const setMap = useSetRecoilState(mapState);
+  const location = useRecoilValue(locationState);
+
   const loadKakaoMap = () => {
     // kakao map 로드
     window.kakao.maps.load(() => {
       const mapContainer = document.getElementById("map");
       const mapOption = {
         center: new window.kakao.maps.LatLng(
-          lat ?? DEFAULT_LAT,
-          lng ?? DEFAULT_LNG
+          lat ?? location.lat,
+          lng ?? location.lng
         ), // 지도 중심 좌표 - 위도,경도
-        level: zoom ?? DEFAULT_ZOOM, // 지도 확대 레벨
+        level: zoom ?? location.zoom, // 지도 확대 레벨
       };
 
       const map = new window.kakao.maps.Map(mapContainer, mapOption);
