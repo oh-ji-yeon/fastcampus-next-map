@@ -9,6 +9,7 @@ interface ResponseType {
   page?: string;
   limit?: string;
   storeId?: string;
+  user?: boolean;
 }
 
 export default async function handler(
@@ -16,7 +17,13 @@ export default async function handler(
   res: NextApiResponse<CommentInterface | CommentApiResponse>
 ) {
   const session = await getServerSession(req, res, authOptions);
-  const { id = "", page = "1", limit = "10", storeId = "" } = req.query;
+  const {
+    id = "",
+    page = "1",
+    limit = "10",
+    storeId = "",
+    user = false,
+  } = req.query;
 
   if (req.method === "POST") {
     // 댓글 생성 로직
@@ -53,6 +60,7 @@ export default async function handler(
     const count = await prisma.comment.count({
       where: {
         storeId: storeId ? parseInt(storeId) : {},
+        userId: user ? session?.user.id : {},
       },
     });
 
@@ -60,11 +68,13 @@ export default async function handler(
       orderBy: { createdAt: "desc" },
       where: {
         storeId: storeId ? parseInt(storeId) : {},
+        userId: user ? session?.user.id : {},
       },
       skip: skipPage * parseInt(limit),
       take: parseInt(limit),
       include: {
         user: true,
+        store: true,
       },
     });
 
