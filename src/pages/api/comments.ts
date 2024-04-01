@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
 import prisma from "@/db";
 import { CommentInterface, CommentApiResponse } from "@/interface";
 
@@ -49,17 +50,17 @@ export default async function handler(
 
     const result = await prisma.comment.delete({
       where: {
-        id: parseInt(id),
+        id: parseInt(id as string),
       },
     });
 
     return res.status(200).json(result);
   } else {
     // 댓글 가져오기 로직
-    const skipPage = parseInt(page) - 1;
+    const skipPage = parseInt(page as string) - 1;
     const count = await prisma.comment.count({
       where: {
-        storeId: storeId ? parseInt(storeId) : {},
+        storeId: storeId ? parseInt(storeId as string) : {},
         userId: user ? session?.user.id : {},
       },
     });
@@ -67,11 +68,11 @@ export default async function handler(
     const comments = await prisma.comment.findMany({
       orderBy: { createdAt: "desc" },
       where: {
-        storeId: storeId ? parseInt(storeId) : {},
+        storeId: storeId ? parseInt(storeId as string) : {},
         userId: user ? session?.user.id : {},
       },
-      skip: skipPage * parseInt(limit),
-      take: parseInt(limit),
+      skip: skipPage * parseInt(limit as string),
+      take: parseInt(limit as string),
       include: {
         user: true,
         store: true,
@@ -80,8 +81,8 @@ export default async function handler(
 
     return res.status(200).json({
       data: comments,
-      page: parseInt(page),
-      totalPage: Math.ceil(count / parseInt(limit)),
+      page: parseInt(page as string),
+      totalPage: Math.ceil(count / parseInt(limit as string)),
     });
   }
 }
