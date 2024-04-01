@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import Pagination from "@/components/Pagination";
 import CommentList from "@/components/comments/CommentList";
@@ -66,7 +67,7 @@ export default function Mypage({
                 width={48}
                 height={48}
                 className="rounded-full w-12 h-12"
-                src={session?.user.image || "/images/zzang1.jpg"}
+                src={session?.user.image || "/images/markers/default.png"}
               />
             </dd>
           </div>
